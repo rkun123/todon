@@ -1,0 +1,27 @@
+{
+  "scripts": {
+    "webpack": "webpack ./src/index.ts",
+    "start": "ts-node ./src/index.ts",
+    "dev": "ts-node-dev ./src/index.ts"
+  },
+  "dependencies": {
+    "@types/textversionjs": "^1.1.1",
+    "canvas": "^2.8.0",
+    "express": "^4.17.1",
+    "megalodon": "^3.6.5",
+    "reflect-metadata": "^0.1.10",
+    "sqlite3": "^4.0.3",
+    "textversionjs": "^1.1.3",
+    "typeorm": "0.2.34"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.12",
+    "ts-loader": "^9.2.3",
+    "ts-node": "^10.0.0",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^4.3.5",
+    "webpack": "^5.41.1",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.2"
+  }
+}

@@ -1,0 +1,5 @@
+/.env
+/yarn-error.log
+/static
+node_modules
+*.sqlite
