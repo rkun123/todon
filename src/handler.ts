@@ -36,11 +36,15 @@ async function finishTodo(connection: Connection, client: MegalodonInterface, st
 	const stream = Readable.from(imageFile)
 	const mediaRes = await client.uploadMedia(stream)
 	const media = mediaRes.data
+	if( status.in_reply_to_id === null) {
+		console.error('original todo status not found...')
+		return
+	}
 	client.deleteStatus(status.id)
 	const res = await client.postStatus(
 		`【Todoが完了しました】\n${todo.text}\n by @${todo.user.userName}`,
 		{
-			in_reply_to_id: status.id,
+			in_reply_to_id: status.in_reply_to_id,
 			visibility: status.visibility,
 			media_ids: [media.id]
 		}
@@ -95,4 +99,10 @@ export async function handleFavouriteUpdate(connection: Connection, client: Mega
 		}
 		await finishTodo(connection, client, notification.status, todo)
 	}
+}
+
+export async function handleFollowed(client: MegalodonInterface, notification: Entity.Notification) {
+	const followedUser = notification.account
+	if(!followedUser) return
+	await client.followAccount(followedUser.id)
 }

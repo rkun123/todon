@@ -1,7 +1,7 @@
 import generator, { Entity, Response } from 'megalodon'
 import "reflect-metadata";
 import {Connection, createConnection} from "typeorm";
-import { handleFavouriteUpdate, handleStatusUpdate } from './handler';
+import { handleFavouriteUpdate, handleStatusUpdate, handleFollowed } from './handler';
 import { config as dotenvConfig } from 'dotenv'
 
 dotenvConfig()
@@ -27,6 +27,7 @@ async function start(connection: Connection) {
 	stream.on('notification', (notification: Entity.Notification) => {
 		console.log(notification)
 		if (notification.type === 'favourite') handleFavouriteUpdate(connection, client, notification)
+		if (notification.type === 'follow') handleFollowed(client, notification)
 	})
 }
 

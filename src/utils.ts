@@ -9,27 +9,45 @@ export function escapeTagFromContent(html: string) {
 	}).replace('@todon', '').replace(/(^ )|( $)/, '')
 }
 
-function wrapText(context: NodeCanvasRenderingContext2D, text: string, x: number, y: number, maxWidth: number, lineHeight: number) {
+function wrapText(context: NodeCanvasRenderingContext2D, text: string, width: number, height: number, maxWidth: number, lineHeight: number) {
 	const words = text.split('')
 	console.debug(words.length)
 	let nextX = 0
 	let nextY = 0
+	const lines: string[] = ['']
+	let idx = 0
+	let textWidth: number = 0
+	let textHeight: number = 0
 
 	for(var n = 0; n < words.length; n++) {
 		var metrics = context.measureText(words[n]);
 		var testWidth = metrics.width;
+
+		if (idx === 0) textWidth += testWidth
+
 		if (nextX + testWidth > maxWidth && n > 0) {
 			// break line
 			console.debug('break at', n)
 			nextY += lineHeight * 1.1
 			nextX = 0
+			idx++
+			lines[idx] = ''
 		}
 		else {
 		}
-		context.fillText(words[n], nextX + x, nextY + y);
+		// context.fillText(words[n], nextX + x, nextY + y);
+		lines[idx] += words[n]
 		nextX += testWidth
 	}
 	// context.fillText(line, x, y);
+	textHeight = (idx+1) * lineHeight * 1.1
+
+	const calcX = width / 2 - textWidth / 2
+	const calcY = height / 2 - textHeight  / 2 + lineHeight*0.1
+
+	lines.forEach((line, idx) => {
+		context.fillText(line, calcX, calcY + lineHeight*1.1*idx)
+	})
 }
 
 function dataURLToBuffer(dataURL: string) {
@@ -48,20 +66,18 @@ export async function generateTodoCard(text: string, finished: boolean) {
 		family: 'noto-sans-cjk'
 	})
 
-	// if finished, card blured
-	if(finished) ctx.filter = 'blur(10px)'
-
 	// load image
 	const image = await loadImage(path.join(__dirname, '../static/boilerplate.png'))
 	ctx.drawImage(image, 0, 0, width, height)
 	ctx.font = '40px noto-sans-cjk'
-	wrapText(ctx, text, 40, 40+40, width - 40 - 40, 40)
+	wrapText(ctx, text, width, height, width - 40 - 40, 40)
 	//fs.writeFileSync(path.join(__dirname, '../static/image.png'), canvas.toBuffer())
 
 	if(finished) {
-		ctx.filter = ''
+		ctx.fillStyle = 'rgba(0, 0, 0, 0.6)'
+		ctx.fillRect(0, 0, width, height)
 		const thumbsUpWidth = 300, thumbsUpHeight = 300
-		const thumbsUpImage = await loadImage(path.join(__dirname, '../static/thumbs_up.png'))
+		const thumbsUpImage = await loadImage(path.join(__dirname, '../static/thumbs-up.svg'))
 		ctx.drawImage(thumbsUpImage, width / 2 - thumbsUpWidth / 2, height / 2 - thumbsUpHeight / 2, thumbsUpWidth, thumbsUpHeight)
 	}
 	return canvas.toDataURL()
