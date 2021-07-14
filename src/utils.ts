@@ -77,7 +77,7 @@ export async function generateTodoCard(text: string, finished: boolean) {
 		ctx.fillStyle = 'rgba(0, 0, 0, 0.6)'
 		ctx.fillRect(0, 0, width, height)
 		const thumbsUpWidth = 300, thumbsUpHeight = 300
-		const thumbsUpImage = await loadImage(path.join(__dirname, '../static/thumbs-up.svg'))
+		const thumbsUpImage = await loadImage(path.join(__dirname, '../static/thumbs_up.png'))
 		ctx.drawImage(thumbsUpImage, width / 2 - thumbsUpWidth / 2, height / 2 - thumbsUpHeight / 2, thumbsUpWidth, thumbsUpHeight)
 	}
 	return canvas.toDataURL()
